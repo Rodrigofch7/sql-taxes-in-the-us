@@ -1,0 +1,16 @@
+[project]
+name = "sql-taxes-in-the-us"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "duckdb>=1.5.4",
+    "geopandas>=1.1.4",
+    "pandas>=3.0.4",
+    "pyarrow>=24.0.0",
+    "python-dotenv>=1.2.2",
+    "requests>=2.34.2",
+    "sqlalchemy>=2.0.51",
+    "tqdm>=4.68.3",
+]
