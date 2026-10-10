@@ -180,7 +180,7 @@ export function flagsFor(row, key) {
     flags.push("Owned and rented homes here are very different stock, so this yield describes neither.");
   }
   if (row.low_reliability && touches(SAMPLE_BASED)) {
-    flags.push("Small sample: few homes stand behind this figure, or its margin of error is wide.");
+    flags.push("Low reliability: few homes stand behind this figure, or its margin of error is wide or missing.");
   }
   if (row.permit_years != null && row.permit_years < 5 && touches(PERMIT_BASED)) {
     flags.push(`Based on ${row.permit_years} of 5 years of permit data.`);

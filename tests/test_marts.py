@@ -49,6 +49,12 @@ def test_topcoded_medians_are_flagged(con, view):
            OR (median_rent >= 3501 AND NOT rent_topcoded)
     """)
     assert unflagged == 0
+    # No county median reaches the value or rent cap, so only the tract run
+    # exercises those two flags. Make sure it really does.
+    if view == "tract":
+        for year in (2012, 2024):
+            assert scalar(con, f"SELECT count(*) FROM tract WHERE year = {year} AND value_topcoded") > 100
+            assert scalar(con, f"SELECT count(*) FROM tract WHERE year = {year} AND rent_topcoded") > 100
     # The cap was lower before 2015: a $1,000,001 median in 2012 is top-coded.
     assert scalar(con, f"""
         SELECT count(*) FROM {view}
@@ -181,11 +187,29 @@ def test_tract_yields_are_bounded(con):
     assert scalar(con, "SELECT avg((gross_rent_yield > 0.5)::INT) FROM tract_latest") < 0.001
 
 
-def test_median_without_margin_is_unreliable(con):
+@pytest.mark.parametrize("median", ["median_home_value", "median_rent", "median_contract_rent"])
+def test_median_without_margin_is_unreliable(con, median):
+    n, unflagged = con.execute(f"""
+        SELECT count(*), count(*) FILTER (WHERE NOT low_reliability) FROM tract
+        WHERE {median} IS NOT NULL AND {median}_moe IS NULL
+    """).fetchone()
+    assert n > 0 and unflagged == 0
+
+
+def test_capped_tax_median_does_not_mark_a_county_unreliable(con):
+    """Large, well-sampled counties whose median tax is merely above the cap."""
     assert scalar(con, """
-        SELECT count(*) FROM tract
-        WHERE median_home_value IS NOT NULL AND median_home_value_moe IS NULL
-          AND NOT low_reliability
+        SELECT count(*) FROM county_latest
+        WHERE tax_topcoded AND population > 500000 AND NOT low_reliability
+    """) > 0
+
+
+def test_every_trendless_county_is_explained(con):
+    """Connecticut aside, a county with no trend must appear in county_changes."""
+    assert scalar(con, """
+        SELECT count(*) FROM county_latest
+        WHERE trend_unavailable AND state_fips <> '09'
+          AND geoid NOT IN (SELECT geoid FROM county_changes WHERE kind IN ('boundary', 'split'))
     """) == 0
 
 

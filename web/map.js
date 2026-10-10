@@ -254,6 +254,10 @@ export async function createMap({ container, legend, tooltip, counties, onSelect
       const rowsById = new Map(rows.map((r) => [r.geoid, r]));
       tractCache.set(stateFips, { geojson: withProperties(geojson, rowsById), rowsById });
     }
+    // The user may have picked a county elsewhere while this was downloading.
+    // Whichever download finishes last must not decide what is on the map.
+    if (state.selected?.slice(0, 2) !== stateFips) return;
+
     const cached = tractCache.get(stateFips);
     state.tractState = stateFips;
     state.tractRows = cached.rowsById;

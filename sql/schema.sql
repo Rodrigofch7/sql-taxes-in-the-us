@@ -108,8 +108,11 @@ SELECT * EXCLUDE (real_factor, value_factor, value_cap, rent_cap,
        -- Unreliable when any of these holds:
        --   a headline median has a coefficient of variation above 30%
        --     (MOE is a 90% interval, so MOE / 1.645 is the standard error);
-       --   a median is published without a margin of error, which is how
-       --     the ACS marks a median that fell in an open-ended bracket;
+       --   a home value or rent median is published without a margin of
+       --     error, which is how the ACS marks a median that fell in an
+       --     open-ended bracket. The tax median is left out of this rule on
+       --     purpose: it lacks a margin exactly where it is capped, and the
+       --     tax figures shown come from the uncapped aggregates;
        --   fewer than 100 rented or 100 owned homes stand behind the figures.
        COALESCE(greatest(
            median_home_value_moe / 1.645 / NULLIF(median_home_value, 0),
@@ -120,6 +123,7 @@ SELECT * EXCLUDE (real_factor, value_factor, value_cap, rent_cap,
        ) > 0.30, false)
            OR (median_home_value IS NOT NULL AND median_home_value_moe IS NULL)
            OR (median_contract_rent IS NOT NULL AND median_contract_rent_moe IS NULL)
+           OR (median_rent IS NOT NULL AND median_rent_moe IS NULL)
            OR COALESCE(renter_occupied_units < 100, true)
            OR COALESCE(owner_occupied_units < 100, true)       AS low_reliability,
 
@@ -136,6 +140,10 @@ CREATE OR REPLACE VIEW tract  AS SELECT * FROM acs_metrics('acs_tract');
 
 -- Counties under the code they carry today. Two counties were only renamed
 -- and recoded, so their older rows are moved to the new code and keep a trend.
+-- county_changes also lists 'boundary' rows (same code, different land; trend
+-- dropped in marts.sql) and 'split' rows (new codes with no earlier data,
+-- recorded for the record). Connecticut's 2022 switch to planning regions is
+-- not listed row by row; it has no earlier data under the new codes either.
 CREATE OR REPLACE VIEW county_bridged AS
 SELECT c.* REPLACE (COALESCE(r.geoid, c.geoid) AS geoid)
 FROM county c

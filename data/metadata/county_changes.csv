@@ -5,3 +5,5 @@ geoid,old_geoid,kind,year,note
 02195,,boundary,2013,Petersburg Borough AK formed with different boundaries from Petersburg Census Area
 02105,,boundary,2013,Hoonah-Angoon Census Area AK lost territory to Petersburg Borough
 02198,,boundary,2013,Prince of Wales-Hyder Census Area AK gained territory from Petersburg Census Area
+02063,02261,split,2019,Valdez-Cordova Census Area AK split into Chugach and Copper River Census Areas
+02066,02261,split,2019,Valdez-Cordova Census Area AK split into Chugach and Copper River Census Areas
