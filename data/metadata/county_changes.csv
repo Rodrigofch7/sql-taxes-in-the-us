@@ -1,0 +1,7 @@
+geoid,old_geoid,kind,year,note
+46102,46113,recode,2015,Shannon County SD renamed Oglala Lakota County; same area
+02158,02270,recode,2015,Wade Hampton Census Area AK renamed Kusilvak Census Area; same area
+51019,,boundary,2013,Bedford County VA absorbed the independent city of Bedford
+02195,,boundary,2013,Petersburg Borough AK formed with different boundaries from Petersburg Census Area
+02105,,boundary,2013,Hoonah-Angoon Census Area AK lost territory to Petersburg Borough
+02198,,boundary,2013,Prince of Wales-Hyder Census Area AK gained territory from Petersburg Census Area
