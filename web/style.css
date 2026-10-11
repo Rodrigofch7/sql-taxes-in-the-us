@@ -105,7 +105,7 @@ select { width: 100%; }
   letter-spacing: -0.01em;
 }
 .tagline { opacity: 0.75; font-size: 13px; }
-.topbar nav { margin-left: auto; }
+.topbar nav { margin-left: auto; display: flex; gap: 18px; }
 .topbar nav a { color: inherit; font-size: 13px; }
 
 /* ---- layout ---- */
@@ -364,3 +364,22 @@ td.empty { text-align: center; padding: 28px; white-space: normal; color: var(--
 .prose tbody th { position: static; background: none; width: 34%; }
 .prose tbody tr { cursor: default; }
 .prose tbody tr:hover th, .prose tbody tr:hover td { background: none; }
+
+/* ---- findings page and county summary ---- */
+
+.finding { padding: 18px 0; border-top: 1px solid var(--grid); }
+.finding h2 { font-size: 19px; line-height: 1.35; margin: 0 0 6px; letter-spacing: -0.01em; }
+.finding p { margin: 0 0 8px; }
+.finding summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+.finding pre {
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  background: var(--sunken);
+  border-radius: 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.summary-text { max-width: 78ch; margin: 10px 0 0; font-size: 15px; line-height: 1.55; }

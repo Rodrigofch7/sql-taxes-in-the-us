@@ -5,6 +5,7 @@ Usage:
     pytest
 """
 import re
+import sys
 from pathlib import Path
 
 import duckdb
@@ -251,3 +252,15 @@ def test_app_metrics_exist_in_the_data(con):
 
     filter_columns = set(re.findall(r'col: "(\w+)"', js))
     assert filter_columns and filter_columns <= county
+
+
+# ---- written findings ------------------------------------------------------
+
+def test_every_written_finding_still_holds(con):
+    """The Findings page must not state something the data no longer supports."""
+    sys.path.insert(0, str(ROOT / "code"))
+    from findings import render_findings
+
+    findings = render_findings(con, ROOT / "data/metadata/findings.json")
+    for finding in findings:
+        assert "{" not in finding["headline"] + finding["body"], finding["id"]

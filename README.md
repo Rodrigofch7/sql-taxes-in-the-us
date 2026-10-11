@@ -108,7 +108,19 @@ data/   raw downloads and the DuckDB file (not checked in), plus the CPI table
 
 `.claude/` defines four review-only specialists for [Claude Code](https://claude.com/claude-code):
 an economist, an investor, a data scientist and a designer. `/panel <question>` asks all
-four and merges their answers into one memo.
+four and merges their answers into one memo. A fifth agent, the writer, drafts the
+Findings page.
+
+## Findings page
+
+`data/metadata/findings.json` holds the written findings. Each is a headline, a body and
+one SQL query: every number and place name in the text is a placeholder filled from the
+query, and the query's `holds` column says whether the claim is still true. The export
+and the tests fail if any finding stops holding, so the page cannot go stale quietly.
+
+```bash
+uv run python code/findings.py   # print the findings as they will be published
+```
 
 ## Sources
 

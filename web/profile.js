@@ -1,6 +1,7 @@
 // The county profile: headline tiles, trend charts and a comparison.
 import { lineChart } from "./charts.js";
 import { METRICS, flagsFor, format, period } from "./metrics.js";
+import { summarise } from "./summary.js";
 
 const MAX_COMPARE = 3;
 
@@ -163,6 +164,8 @@ export function createProfile({ root, counties, states, meta, loadTrends, onClos
       `${format(county.population, "int")} residents · median home ${format(county.median_home_value, "usd")} · ` +
       `median rent ${format(county.median_contract_rent, "usd")} · median household income ${format(county.median_household_income, "usd")}`);
 
+    const summary = node("p", "summary-text", summarise(county, stateRow, meta).join(" "));
+
     const tiles = node("div", "tiles");
     for (const t of TILES) tiles.append(tile(t, county, stateRow));
 
@@ -182,7 +185,7 @@ export function createProfile({ root, counties, states, meta, loadTrends, onClos
     const checklist = node("ul", "checklist");
     for (const item of CHECKLIST) checklist.append(node("li", null, item));
 
-    root.replaceChildren(header, facts, warnings, tiles, trendHead, trendNote,
+    root.replaceChildren(header, facts, summary, warnings, tiles, trendHead, trendNote,
       compareControl(county, compare), charts, checkHead, checklist);
 
     const geoids = [geoid, ...compare];

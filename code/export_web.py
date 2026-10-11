@@ -8,6 +8,7 @@ Produces:
   web/data/{state_latest,county_latest,county_trend}.json
   web/data/tracts/tract_latest_<state fips>.json
   web/data/geo/*.geojson
+  web/data/findings.json           the written findings, numbers filled in
   web/data/meta.json               years covered and build date, for the footer
 
 Tables are written as {"columns": [...], "rows": [[...], ...]}: a third of the
@@ -21,6 +22,8 @@ import os
 import shutil
 
 import duckdb
+
+from findings import render_findings
 
 DB_PATH = "data/processed/acs.duckdb"
 GEO_DIR = "data/processed/geo"
@@ -56,6 +59,9 @@ def main():
     if not geo_files:
         raise FileNotFoundError(f"no GeoJSON in {GEO_DIR}; run code/fetch_geometry.py")
 
+    # Before touching the output: a finding that no longer holds stops the export.
+    findings = render_findings(con)
+
     # Everything here is generated, so start clean: no stale files survive.
     shutil.rmtree(OUT_DIR, ignore_errors=True)
     os.makedirs(f"{OUT_DIR}/geo")
@@ -76,6 +82,10 @@ def main():
             f"{OUT_DIR}/tracts/tract_latest_{state_fips}.json",
         )
     print(f"   {OUT_DIR}/tracts: {len(states)} files")
+
+    with open(f"{OUT_DIR}/findings.json", "w") as f:
+        json.dump(findings, f, ensure_ascii=False, indent=1)
+    print(f"   {OUT_DIR}/findings.json: {len(findings)} findings")
 
     for src in geo_files:
         shutil.copy(src, f"{OUT_DIR}/geo/")

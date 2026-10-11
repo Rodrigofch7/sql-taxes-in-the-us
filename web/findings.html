@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Findings · US Property Tax and Housing Screener</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><span>Property Tax and Housing Screener</span></a>
+    <nav><a href="./">Screener</a><a href="methods.html">Methods and caveats</a></nav>
+  </header>
+
+  <main class="prose">
+    <h1>Findings</h1>
+    <p>
+      What the data says, in plain words. Every number on this page is calculated from the
+      data when the site is built, and each finding shows the query behind it. These describe
+      patterns across counties; they are not advice about any place.
+    </p>
+    <p class="muted">
+      Unless a finding says otherwise, "county" here means a county of at least 50,000 people.
+      Those are under a third of all counties but hold most of the population, and their
+      figures are much less noisy. Each county counts once, whatever its size. Findings about
+      change over time leave out Connecticut, whose counties were replaced by planning regions
+      in 2022, and the few counties whose boundaries changed.
+    </p>
+    <p id="status" class="muted" role="status">Loading…</p>
+    <div id="findings"></div>
+    <p id="vintage" class="muted"></p>
+    <p class="muted">
+      Tax figures are what owner-occupiers pay, and every figure is a five-year average.
+      <a href="methods.html">Read the caveats</a> before relying on any of this.
+    </p>
+  </main>
+
+  <script type="module" src="findings.js"></script>
+</body>
+</html>
