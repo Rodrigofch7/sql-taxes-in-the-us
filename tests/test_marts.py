@@ -263,4 +263,10 @@ def test_every_written_finding_still_holds(con):
 
     findings = render_findings(con, ROOT / "data/metadata/findings.json")
     for finding in findings:
-        assert "{" not in finding["headline"] + finding["body"], finding["id"]
+        chart = finding["chart"]
+        text = finding["headline"] + finding["body"] + chart["title"] + chart.get("subtitle", "")
+        assert "{" not in text, finding["id"]
+        assert chart["rows"], finding["id"]
+        # No chart may plot a missing value as if it were a number.
+        for row in chart["rows"]:
+            assert all(v is not None for k, v in row.items() if k in ("x", "y", "value", "lo", "hi")), finding["id"]

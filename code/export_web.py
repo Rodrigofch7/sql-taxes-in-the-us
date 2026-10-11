@@ -84,7 +84,7 @@ def main():
     print(f"   {OUT_DIR}/tracts: {len(states)} files")
 
     with open(f"{OUT_DIR}/findings.json", "w") as f:
-        json.dump(findings, f, ensure_ascii=False, indent=1)
+        json.dump(findings, f, ensure_ascii=False, separators=(",", ":"))
     print(f"   {OUT_DIR}/findings.json: {len(findings)} findings")
 
     for src in geo_files:

@@ -75,6 +75,14 @@ uv run python -m http.server 8000
 Open <http://localhost:8000>. There is no build step: the app is plain HTML and JavaScript
 modules, with MapLibre GL loaded from a CDN.
 
+## Publish
+
+The live site is the `gh-pages` branch, served by GitHub Pages. After rebuilding the data:
+
+```bash
+bash code/deploy.sh
+```
+
 ## Query the database directly
 
 ```bash
@@ -113,8 +121,9 @@ Findings page.
 
 ## Findings page
 
-`data/metadata/findings.json` holds the written findings. Each is a headline, a body and
-one SQL query: every number and place name in the text is a placeholder filled from the
+`data/metadata/findings.json` holds the written findings, shown as an illustrated report
+at `web/findings.html`. Each is a headline, a body, one SQL query and a chart with its
+own query: every number and place name in the text is a placeholder filled from the
 query, and the query's `holds` column says whether the claim is still true. The export
 and the tests fail if any finding stops holding, so the page cannot go stale quietly.
 
