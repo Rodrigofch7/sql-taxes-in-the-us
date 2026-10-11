@@ -1,0 +1,146 @@
+/* The Findings report: an editorial page on a paper-toned background.
+   Headlines and running text are serif; everything inside a chart is sans. */
+
+body.report {
+  --page: #f6f2ea;
+  --surface: #f6f2ea;
+  --sunken: #ece7dc;
+  --grid: #ddd6c8;
+  --axis: #b9b1a0;
+  --quiet: #a39c8d;
+  --rule: #0b0b0b;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+  background: var(--page);
+}
+
+@media (prefers-color-scheme: dark) {
+  body.report {
+    --page: #161615;
+    --surface: #161615;
+    --sunken: #222220;
+    --grid: #2e2e2b;
+    --axis: #4a4a45;
+    --quiet: #6f6e68;
+    --rule: #ffffff;
+  }
+}
+
+.report-main { max-width: 760px; margin: 0 auto; padding: 0 20px 56px; }
+
+.kicker {
+  font: 600 12px/1.2 system-ui, -apple-system, "Segoe UI", sans-serif;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+/* ---- masthead ---- */
+
+.masthead { padding: 44px 0 20px; border-bottom: 1px solid var(--rule); }
+.masthead h1 {
+  font: 700 clamp(30px, 5.4vw, 46px)/1.1 var(--serif);
+  letter-spacing: -0.015em;
+  margin: 10px 0 14px;
+  text-wrap: balance;
+}
+.dek { font: 400 19px/1.5 var(--serif); color: var(--text-secondary); margin: 0 0 14px; max-width: 62ch; }
+.dateline { font-size: 12px; color: var(--text-muted); margin: 0; }
+
+.reader-note {
+  margin: 22px 0 0;
+  padding: 14px 16px;
+  background: var(--sunken);
+  border-radius: 4px;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+.reader-note strong { color: var(--text); }
+
+/* ---- one finding ---- */
+
+.story { padding: 40px 0 8px; border-bottom: 1px solid var(--grid); }
+.story:last-child { border-bottom: 0; }
+.story h2 {
+  font: 700 clamp(23px, 3.6vw, 30px)/1.2 var(--serif);
+  letter-spacing: -0.01em;
+  margin: 10px 0 12px;
+  text-wrap: balance;
+}
+.standfirst { font: 400 17.5px/1.62 var(--serif); margin: 0 0 22px; }
+
+figure { margin: 0 0 18px; padding-top: 12px; border-top: 3px solid var(--rule); }
+.fig-title { font-weight: 650; font-size: 15px; line-height: 1.35; }
+.fig-sub { font-size: 13px; color: var(--text-secondary); margin: 2px 0 12px; }
+.fig-source { font-size: 11.5px; color: var(--text-muted); margin-top: 10px; }
+
+.method { margin: 0 0 28px; }
+.method summary { cursor: pointer; font-size: 13px; color: var(--accent); }
+.method pre {
+  margin: 8px 0 0;
+  padding: 12px 14px;
+  background: var(--sunken);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.report-foot { margin-top: 28px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 13px; color: var(--text-secondary); }
+.report-foot p { margin: 0 0 8px; }
+
+/* ---- charts ---- */
+
+.rc { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+.rc-plot { position: relative; }
+.rc-plot svg { display: block; overflow: visible; }
+
+.rc-legend { display: flex; flex-wrap: wrap; gap: 4px 18px; margin: 0 0 12px; font-size: 13px; color: var(--text-secondary); }
+.rc-legend-item { display: inline-flex; align-items: center; gap: 7px; }
+.rc-swatch { flex: none; }
+.rc-swatch.rc-dot { width: 10px; height: 10px; border-radius: 50%; }
+.rc-swatch.rc-line { width: 18px; height: 3px; border-radius: 2px; }
+.rc-swatch.rc-tick { width: 2px; height: 14px; }
+
+.rc-grid { stroke: var(--grid); stroke-width: 1; }
+.rc-axis { stroke: var(--axis); stroke-width: 1; }
+.rc-tick { fill: var(--text-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.rc-axis-title { fill: var(--text-secondary); font-size: 12px; }
+.rc-label { fill: var(--text); font-size: 13px; }
+.rc-label.rc-strong { font-weight: 650; }
+.rc-sub { fill: var(--text-muted); font-size: 12px; }
+.rc-value { fill: var(--text); font-size: 14px; font-weight: 650; font-variant-numeric: tabular-nums; }
+/* A halo in the page colour keeps a label legible where it crosses marks. */
+.rc-halo { paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+
+.rc-dot { stroke: var(--surface); stroke-width: 2; }
+.rc-crowd { fill-opacity: 0.5; }
+.rc-dense { fill-opacity: 0.8; }
+.rc-ring { fill: none; stroke: var(--text); stroke-width: 1.5; pointer-events: none; }
+.rc-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+.rc-span { stroke: var(--axis); stroke-width: 3; stroke-linecap: round; }
+.rc-mid { stroke: var(--text); stroke-width: 2; }
+.rc-leader { stroke: var(--axis); stroke-width: 1; }
+.rc-ref { stroke: var(--text-secondary); stroke-width: 1; }
+.rc-ref-label { fill: var(--text-secondary); font-size: 12px; }
+.rc-crosshair { stroke: var(--axis); stroke-width: 1; }
+.rc-hit { fill: transparent; cursor: default; }
+.rc-hit:focus-visible, .rc-plot circle:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.rc-tip {
+  position: absolute;
+  z-index: 3;
+  max-width: 260px;
+  padding: 7px 10px;
+  background: var(--text);
+  color: var(--page);
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1.45;
+  pointer-events: none;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+}
+.rc-tip-row { display: flex; align-items: baseline; gap: 6px; }
+.rc-tip-row strong { font-variant-numeric: tabular-nums; }
+.rc-key { width: 8px; height: 8px; border-radius: 50%; flex: none; align-self: center; }
