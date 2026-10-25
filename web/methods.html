@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Methods and caveats · US Property Tax and Housing Screener</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./"><span>Property Tax and Housing Screener</span></a>
+    <nav><a href="./">Screener</a><a href="findings.html">Findings</a></nav>
+  </header>
+
+  <main class="prose">
+    <h1>Methods and caveats</h1>
+    <p>
+      This tool compares US counties and census tracts on property tax, rent, prices and how much
+      housing gets built. It is a screening aid: it narrows a long list of places to a short one.
+      It does not replace checking the actual tax bill, rent roll and zoning for a specific property.
+    </p>
+
+    <h2 id="tax">What the tax figures mean</h2>
+    <p>
+      Every tax figure here comes from the American Community Survey, which asks
+      <strong>owner-occupiers</strong> what they paid in real estate taxes last year. That makes it
+      a measure of what current residents pay, not of what a new owner or a landlord would pay.
+    </p>
+    <p>The gap differs from state to state, because the law treats owners differently:</p>
+    <ul>
+      <li><strong>Assessment caps.</strong> Some states limit how fast a home's taxable value can
+        rise while the owner stays put, and reset it at sale. A buyer then pays tax on the purchase
+        price while neighbours pay on a much older value.</li>
+      <li><strong>Homestead exemptions.</strong> Many states cut the bill for a primary residence.
+        A rental or second home does not qualify.</li>
+      <li><strong>Property classes.</strong> Some states tax rental, commercial and owner-occupied
+        property at different rates. South Carolina, for example, assesses an owner-occupied home
+        at 4% of its value and a rental at 6%, and exempts only the owner-occupied home from school
+        operating taxes.</li>
+    </ul>
+    <p>
+      So the rate shown is not just too low for an investor by a fixed amount. In some states a
+      rental pays about the same as an owner-occupier; in others it pays two to three times as
+      much. A ranking by this rate partly ranks states by how generously they treat owner-occupiers.
+      Look up the local assessor's rules for a non-homestead property before relying on it.
+    </p>
+    <p>
+      A low tax rate is also not a better deal in itself. Buyers pay more for a home with a low
+      tax bill, so much of the difference is already in the price. What matters is the rate a new
+      owner will face, whether it is likely to change, and what the tax pays for.
+    </p>
+
+    <h2>Measures</h2>
+    <table>
+      <thead><tr><th>Measure</th><th>How it is calculated</th></tr></thead>
+      <tbody>
+        <tr><th>Owner-occupier tax rate</th>
+          <td>Total real estate taxes paid by owner-occupiers ÷ total value of their homes.</td></tr>
+        <tr><th>Owner-occupier tax bill</th>
+          <td>Total real estate taxes paid ÷ number of owner-occupied homes.</td></tr>
+        <tr><th>Gross rent yield</th>
+          <td>12 × median contract rent ÷ median home value.</td></tr>
+        <tr><th>Gross yield minus owner tax rate</th>
+          <td>Gross rent yield minus the owner-occupier tax rate.</td></tr>
+        <tr><th>Rental vacancy rate</th>
+          <td>Vacant homes for rent ÷ (rented homes + vacant homes for rent + homes rented but
+            not yet occupied).</td></tr>
+        <tr><th>Price-to-income ratio</th>
+          <td>Median home value ÷ median income of all households.</td></tr>
+        <tr><th>Rent as share of income</th>
+          <td>12 × median gross rent ÷ median income of all households.</td></tr>
+        <tr><th>Growth after inflation</th>
+          <td>Total change between the first and latest survey periods, adjusted with the national
+            CPI-U. A 12-year total, not an annual rate.</td></tr>
+        <tr><th>Homes permitted per 1,000 existing</th>
+          <td>Average homes authorised by building permit per year over the latest five
+            years ÷ existing homes × 1,000.</td></tr>
+        <tr><th>Share of permits in 5+ unit buildings</th>
+          <td>Permitted homes in buildings of five or more ÷ all permitted homes, same years.</td></tr>
+        <tr><th>Percentile</th>
+          <td>The share of counties, nationally or in the same state, with a lower value. State
+            percentiles are not shown for states with fewer than five counties.</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Things to keep in mind</h2>
+    <ul>
+      <li><strong>High yield mostly marks cheap markets.</strong> Rents cannot fall far below the
+        cost of running a building, while prices in a declining place can. So the highest yields
+        are concentrated in places that are losing people and have high poverty and vacancy. Read
+        yield next to population growth and rental vacancy, not on its own.</li>
+      <li><strong>Yield is a rough proxy.</strong> It divides the rent of rented homes by the value
+        of owned homes, which are different buildings. It ignores vacancy, maintenance, insurance
+        and financing. "Gross yield minus owner tax rate" removes one cost only and is not a net yield.</li>
+      <li><strong>Every figure is a five-year average.</strong> "2020–24" means survey responses
+        from 2020 to 2024, in 2024 dollars. Home values and rents rose quickly in those years, so
+        the figures sit below today's prices.</li>
+      <li><strong>The starting period includes the housing bust.</strong> Growth is measured from
+        2008–12. Places where prices fell hardest then show the largest gains, and part of that is
+        recovery.</li>
+      <li><strong>Growth mixes appreciation with new building.</strong> A rising median home value
+        can mean existing homes gained value, or that newer, dearer homes were added.</li>
+      <li><strong>Adjacent periods share a year.</strong> The four periods are 2008–12, 2012–16,
+        2016–20 and 2020–24. Each shares its first year with the one before, so neighbouring
+        points on a trend chart are not fully independent.</li>
+      <li><strong>How older home values are adjusted.</strong> Before its 2018–22 release the
+        Census did not adjust home values for inflation within a five-year period, as it did for
+        rent and income. Older home values are scaled here by the ratio of the final year's CPI
+        to the period's average CPI so that all figures are in final-year dollars.</li>
+      <li><strong>Why the tax rate uses totals, not medians.</strong> The Census caps the published
+        median tax at $10,001 and the median home value at $2,000,001. In the most expensive places
+        the medians sit on those caps, so a rate built from them is wrong. Totals are not capped.</li>
+      <li><strong>Capped values are marked.</strong> Where a median home value or rent is at a
+        Census cap, measures that use it carry a ⚠. Where it is at the Census floor ($9,999 for
+        value, $99 for rent), ratios built on it are left blank.</li>
+      <li><strong>Small samples are marked.</strong> A ⚠ also appears where the margin of error on
+        home value, rent or tax implies a coefficient of variation above 30%, where a home value
+        or rent median is published without a margin of error, or where fewer than 100 rented
+        or 100 owned homes stand behind the figures. This is common for tracts and small rural counties, and tract
+        yields in particular should be read as rough.</li>
+      <li><strong>No trend for tracts.</strong> Tract boundaries were redrawn in 2020, so an older
+        tract with the same code can cover different land. Tracts show the latest period only.</li>
+      <li><strong>No trend where county boundaries changed.</strong> Connecticut replaced its eight
+        counties with nine planning regions in 2022. Bedford County, Virginia, absorbed the city of
+        Bedford in 2013, and five areas in Alaska were redrawn or split. Growth measures are blank for all of these.</li>
+      <li><strong>Permits are not zoning.</strong> Permit counts show where housing is being built,
+        which follows demand at least as much as rules: most places with few permits are places
+        few people are moving to. For a landlord, many permits also mean competing supply. The
+        counts include estimates for permit offices that did not report. About 3% of counties
+        have no permit data, and 27 counties, including all of Connecticut, have fewer than five
+        years of it; those are marked.</li>
+      <li><strong>Missing figures and filters.</strong> A county with no figure for a measure is
+        left out when you filter on that measure.</li>
+      <li><strong>Puerto Rico is not included.</strong></li>
+    </ul>
+
+    <h2>Sources</h2>
+    <ul>
+      <li>US Census Bureau, American Community Survey 5-year estimates, 2012, 2016, 2020 and 2024.</li>
+      <li>US Census Bureau, Building Permits Survey, annual county files.</li>
+      <li>US Census Bureau, cartographic boundary files, 2024.</li>
+      <li>US Bureau of Labor Statistics, CPI-U all items, annual average, retrieved through FRED.</li>
+      <li>US Census Bureau, ACS user note 2023-07, on inflation adjustment of home values.</li>
+      <li>South Carolina Department of Revenue, on assessment ratios for owner-occupied and other homes.</li>
+      <li>Basemap: OpenFreeMap, © OpenMapTiles, data from OpenStreetMap.</li>
+    </ul>
+    <p>
+      This product uses Census Bureau data but is not endorsed or certified by the Census Bureau.
+      Nothing here is investment, tax or legal advice.
+    </p>
+  </main>
+</body>
+</html>

@@ -1,9 +1,11 @@
 import os
 import re
+import sys
 import logging
 
 import requests
 import pandas as pd
+import pyarrow.parquet as pq
 from tqdm import tqdm
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -22,17 +24,41 @@ YEARS = [2012, 2016, 2020, 2024]
 BASE_URL = "https://api.census.gov/data"
 DATASET = "acs/acs5"
 
-# Skip a (level, year) if its parquet already exists. Makes the run resumable
-# after a Ctrl+C without re-downloading everything.
+# Skip a (level, year) if its parquet already exists AND already holds every
+# variable below. Makes the run resumable after a Ctrl+C without re-downloading
+# everything, while files from an older, shorter VARIABLES list get refreshed.
 SKIP_EXISTING = True
 
+# Every code was checked against variables.html for 2012, 2016, 2020 and 2024.
 VARIABLES = {
     "B19013_001E": "median_household_income",
     "B19301_001E": "per_capita_income",
     "B25077_001E": "median_home_value",
-    "B25064_001E": "median_rent",
+    "B25064_001E": "median_rent",           # gross rent: includes utilities
+    "B25058_001E": "median_contract_rent",  # what the landlord is paid
     "B25103_001E": "median_real_estate_taxes_paid",  # see note below
     "B17001_002E": "poverty_count",
+    # denominators
+    "B17001_001E": "poverty_universe",
+    "B01003_001E": "population",
+    "B25001_001E": "housing_units",
+    "B25002_003E": "vacant_units",
+    "B25003_001E": "occupied_units",
+    "B25003_002E": "owner_occupied_units",
+    "B25003_003E": "renter_occupied_units",
+    "B25004_002E": "vacant_for_rent_units",
+    "B25004_003E": "rented_not_occupied_units",
+    # Aggregates over owner-occupied units. The medians above are top-coded
+    # ($10,001 for taxes, $2,000,001 for value); these are not, so
+    # aggregate taxes / aggregate value gives a rate that survives the cap.
+    "B25090_001E": "aggregate_real_estate_taxes_paid",
+    "B25082_001E": "aggregate_home_value",
+    # margins of error (90% confidence) for the headline medians
+    "B19013_001M": "median_household_income_moe",
+    "B25077_001M": "median_home_value_moe",
+    "B25064_001M": "median_rent_moe",
+    "B25058_001M": "median_contract_rent_moe",
+    "B25103_001M": "median_real_estate_taxes_paid_moe",
 }
 
 # NOTE on taxes: your original used B25118_001E, which is "Tenure by Household
@@ -136,6 +162,7 @@ def download_county(session, url):
 
 def download_tract(session, url):
     frames = []
+    failed = []
     for state_fips in tqdm(STATE_FIPS, desc="tracts"):
         params = {
             **_base_params(),
@@ -148,6 +175,12 @@ def download_tract(session, url):
                 frames.append(df)
         except requests.RequestException as e:
             log.warning("state %s failed after retries: %s", state_fips, e)
+            failed.append(state_fips)
+
+    # A file missing whole states would be saved, then skipped forever on the
+    # next run. Better to save nothing and let the rerun retry this year.
+    if failed:
+        raise RuntimeError(f"tract download incomplete, failed states: {failed}")
 
     return pd.concat(frames, ignore_index=True) if frames else pd.DataFrame()
 
@@ -181,6 +214,13 @@ def output_path(level, year):
     return f"data/raw/acs_{level}_{year}.parquet"
 
 
+def is_complete(path):
+    """True if the parquet at `path` exists and has every column in VARIABLES."""
+    if not os.path.exists(path):
+        return False
+    return set(VARIABLES) <= set(pq.read_schema(path).names)
+
+
 def save(df, year, level):
     if df.empty:
         log.warning("nothing to save for %s %s (empty frame)", level, year)
@@ -200,13 +240,14 @@ def main():
         raise ValueError("Missing CENSUS_API_KEY in .env")
 
     session = make_session()
+    failed = []
 
     for year in YEARS:
         url = build_url(year)
         log.info("===== YEAR %s =====", year)
 
         for level in ["state", "county", "tract"]:
-            if SKIP_EXISTING and os.path.exists(output_path(level, year)):
+            if SKIP_EXISTING and is_complete(output_path(level, year)):
                 log.info("skip %s %s (already exists)", level, year)
                 continue
 
@@ -224,6 +265,12 @@ def main():
             except Exception as e:
                 # One bad (year, level) shouldn't kill the whole run.
                 log.error("failed %s %s: %s", level, year, e)
+                failed.append((level, year))
+
+    # Finish the run, but don't let a build go ahead on missing files.
+    if failed:
+        log.error("incomplete: %s. Rerun to retry only these.", failed)
+        sys.exit(1)
 
 
 if __name__ == "__main__":

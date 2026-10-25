@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Findings · US Property Tax and Housing Screener</title>
+  <meta name="description" content="Eight things the data says about US property tax, rent yields and where homes get built, each with the chart and query behind it.">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="report.css">
+</head>
+<body class="report">
+  <header class="topbar">
+    <a class="brand" href="./"><span>Property Tax and Housing Screener</span></a>
+    <nav><a href="./">Screener</a><a href="methods.html">Methods and caveats</a></nav>
+  </header>
+
+  <main class="report-main">
+    <header class="masthead">
+      <div class="kicker">Findings</div>
+      <h1>What the numbers say about property tax, rents and building in America</h1>
+      <p class="dek">
+        Eight patterns in the county data, and what each one means for reading a tax rate
+        or a rent yield. Every number and chart is calculated from the data when this page
+        is built, and each finding shows the query behind it.
+      </p>
+      <p class="dateline" id="dateline"></p>
+    </header>
+
+    <aside class="reader-note">
+      <strong>How to read this.</strong> Unless a finding says otherwise, "county" means a
+      county of at least 50,000 people. Those are under a third of all counties but hold most
+      of the population, and their figures are far less noisy. Each county counts once,
+      whatever its size. Findings about change over time leave out Connecticut, whose counties
+      were replaced by planning regions in 2022, and the few counties whose boundaries changed.
+      These are patterns, not advice about any place.
+    </aside>
+
+    <p id="status" class="muted" role="status">Loading…</p>
+    <div id="findings"></div>
+
+    <footer class="report-foot">
+      <p>
+        Tax figures are what owner-occupiers pay; a landlord or new buyer often pays more.
+        Every figure is a five-year average and lags today's prices and rents.
+        <a href="methods.html">Read the methods and caveats</a>, or
+        <a href="./">explore the counties yourself</a>.
+      </p>
+      <p>This product uses Census Bureau data but is not endorsed or certified by the Census
+        Bureau. Nothing here is investment, tax or legal advice.</p>
+    </footer>
+  </main>
+
+  <script type="module" src="findings.js"></script>
+</body>
+</html>

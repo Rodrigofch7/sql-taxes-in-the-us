@@ -7,23 +7,30 @@
 --
 -- Key metrics:
 --   median_real_estate_taxes_paid  = the typical homeowner's annual tax bill
---   effective_property_tax_rate    = taxes / home value  (rate, not dollars)
+--   mean_real_estate_taxes_paid    = the average bill (not top-coded)
+--   effective_tax_rate_agg         = aggregate taxes / aggregate home value
+--   effective_property_tax_rate    = median taxes / median home value
 --   tax_to_income_ratio            = taxes / household income  (burden)
 --
--- NOTE: dollars are NOMINAL. See the inflation block at the bottom to compare
--- 2012 and 2024 in real terms.
+-- The ACS caps the median tax at $10,001, so the highest-tax places all tie on
+-- it. Rankings below use the mean bill and the aggregate rate instead.
+--
+-- NOTE: dollars are NOMINAL unless a column says real. See the last query to
+-- compare 2012 and 2024 in real terms.
 -- =====================================================================
 
 
--- Q1 ── Counties with the highest typical tax bill (2024) -------------------
+-- Q1 ── Counties with the highest average tax bill (2024) -------------------
 SELECT name,
-       ROUND(median_real_estate_taxes_paid)        AS taxes,
+       ROUND(mean_real_estate_taxes_paid)          AS mean_taxes,
+       ROUND(median_real_estate_taxes_paid)        AS median_taxes,
+       tax_topcoded,
        ROUND(median_home_value)                    AS home_value,
-       ROUND(100 * effective_property_tax_rate, 2) AS eff_rate_pct
+       ROUND(100 * effective_tax_rate_agg, 2)      AS eff_rate_pct
 FROM county
 WHERE year = 2024
-  AND median_real_estate_taxes_paid IS NOT NULL
-ORDER BY median_real_estate_taxes_paid DESC
+  AND mean_real_estate_taxes_paid IS NOT NULL
+ORDER BY mean_real_estate_taxes_paid DESC
 LIMIT 20;
 
 
@@ -41,32 +48,31 @@ LIMIT 20;
 -- Q3 ── Highest EFFECTIVE tax rate (taxes as % of home value), 2024 ---------
 -- Ranks very differently from raw dollars: high-value areas can have low rates.
 SELECT name,
-       ROUND(100 * effective_property_tax_rate, 2) AS eff_rate_pct,
-       ROUND(median_real_estate_taxes_paid)        AS taxes,
+       ROUND(100 * effective_tax_rate_agg, 2)      AS eff_rate_pct,
+       ROUND(mean_real_estate_taxes_paid)          AS mean_taxes,
        ROUND(median_home_value)                    AS home_value
 FROM county
 WHERE year = 2024
-  AND effective_property_tax_rate IS NOT NULL
-  AND median_home_value > 0
-ORDER BY effective_property_tax_rate DESC
+  AND effective_tax_rate_agg IS NOT NULL
+ORDER BY effective_tax_rate_agg DESC
 LIMIT 20;
 
 
 -- Q4 ── Lowest effective tax rate, 2024 ------------------------------------
 SELECT name,
-       ROUND(100 * effective_property_tax_rate, 2) AS eff_rate_pct,
+       ROUND(100 * effective_tax_rate_agg, 2)      AS eff_rate_pct,
        ROUND(median_home_value)                    AS home_value
 FROM county
 WHERE year = 2024
-  AND effective_property_tax_rate > 0
-ORDER BY effective_property_tax_rate ASC
+  AND effective_tax_rate_agg > 0
+ORDER BY effective_tax_rate_agg ASC
 LIMIT 20;
 
 
 -- Q5 ── State ranking: typical bill and effective rate, 2024 ---------------
 SELECT name AS state,
        ROUND(median_real_estate_taxes_paid)        AS taxes,
-       ROUND(100 * effective_property_tax_rate, 2) AS eff_rate_pct
+       ROUND(100 * effective_tax_rate_agg, 2)      AS eff_rate_pct
 FROM state
 WHERE year = 2024
 ORDER BY median_real_estate_taxes_paid DESC;
@@ -216,25 +222,18 @@ PIVOT state
 ORDER BY name;
 
 
--- =====================================================================
--- OPTIONAL: compare years in REAL (inflation-adjusted) dollars.
--- Fill in a CPI index per year (e.g. annual CPI-U), then deflate. Replace the
--- placeholder index values with real ones before trusting the output.
--- =====================================================================
--- WITH cpi(year, idx) AS (
---     VALUES (2012, 100.0), (2016, 106.0), (2020, 113.0), (2024, 135.0)
--- )
--- SELECT c.name,
---        ROUND(c12.median_real_estate_taxes_paid)                              AS taxes_2012_nominal,
---        ROUND(c24.median_real_estate_taxes_paid)                              AS taxes_2024_nominal,
---        ROUND(c12.median_real_estate_taxes_paid * (k24.idx / k12.idx))        AS taxes_2012_in_2024usd,
---        ROUND(100 * (c24.median_real_estate_taxes_paid
---              - c12.median_real_estate_taxes_paid * (k24.idx / k12.idx))
---              / NULLIF(c12.median_real_estate_taxes_paid * (k24.idx / k12.idx), 0), 1) AS real_pct_change
--- FROM (SELECT geoid, name, median_real_estate_taxes_paid FROM county WHERE year = 2012) c12
--- JOIN (SELECT geoid,       median_real_estate_taxes_paid FROM county WHERE year = 2024) c24 USING (geoid)
--- CROSS JOIN (SELECT idx FROM cpi WHERE year = 2012) k12
--- CROSS JOIN (SELECT idx FROM cpi WHERE year = 2024) k24
--- JOIN county c ON c.geoid = c12.geoid AND c.year = 2024
--- ORDER BY real_pct_change DESC
--- LIMIT 20;
+-- Q15 ── Fastest-rising county tax bills in REAL dollars, 2012 -> 2024 -----
+-- Uses the mean bill (not top-coded), deflated with CPI-U to 2024 dollars.
+-- Connecticut is absent: its counties were replaced by planning regions in
+-- 2022, so no 2012 geoid matches a 2024 one.
+SELECT a.name,
+       ROUND(a.mean_real_estate_taxes_paid)       AS taxes_2012_nominal,
+       ROUND(a.real_mean_real_estate_taxes_paid)  AS taxes_2012_in_2024usd,
+       ROUND(b.mean_real_estate_taxes_paid)       AS taxes_2024,
+       ROUND(100 * (b.real_mean_real_estate_taxes_paid
+                    / NULLIF(a.real_mean_real_estate_taxes_paid, 0) - 1), 1) AS real_pct_change
+FROM (SELECT * FROM county WHERE year = 2012) a
+JOIN (SELECT * FROM county WHERE year = 2024) b USING (geoid)
+WHERE a.mean_real_estate_taxes_paid > 0
+ORDER BY real_pct_change DESC
+LIMIT 20;

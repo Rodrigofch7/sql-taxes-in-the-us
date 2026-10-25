@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>US Property Tax and Housing Screener</title>
+  <meta name="description" content="Compare US counties and census tracts on property tax, rent yield, prices and how much housing gets built.">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path d="M3 11.2 12 4l9 7.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="6" y="13" width="3" height="7" rx="1" fill="currentColor"/>
+        <rect x="10.5" y="10.5" width="3" height="9.5" rx="1" fill="currentColor"/>
+        <rect x="15" y="15" width="3" height="5" rx="1" fill="currentColor"/>
+      </svg>
+      <span>Property Tax and Housing Screener</span>
+    </a>
+    <span class="tagline">Compare US counties on tax, yield, prices and building</span>
+    <nav><a href="findings.html">Findings</a><a href="methods.html">Methods and caveats</a></nav>
+  </header>
+
+  <div class="shell">
+    <aside class="sidebar" aria-label="Map and filter settings">
+      <section>
+        <h2>Map</h2>
+        <label class="stack">
+          <span>Colour counties by</span>
+          <select id="metric"></select>
+        </label>
+        <p id="metric-note" class="hint"></p>
+        <label class="stack">
+          <span>State</span>
+          <select id="state"></select>
+        </label>
+      </section>
+
+      <section>
+        <div class="section-head">
+          <h2>Filters <small id="filter-count"></small></h2>
+          <button type="button" id="reset">Reset</button>
+        </div>
+        <div id="filters"></div>
+        <label class="check">
+          <input type="checkbox" id="reliable">
+          <span>Hide small-sample counties</span>
+        </label>
+        <p class="hint">Growth figures are 12-year totals, not annual rates. A county with no figure for a filtered measure is left out.</p>
+      </section>
+
+      <p class="caveat">
+        Tax figures show what current owner-occupiers pay. A rental or newly bought home often pays
+        more, and how much more differs by state. <a href="methods.html#tax">Why</a>
+      </p>
+    </aside>
+
+    <main class="content">
+      <p id="status" class="status" role="status">Loading data…</p>
+
+      <section class="map-card" aria-label="Map">
+        <div id="map"></div>
+        <div id="legend" class="legend"></div>
+        <div id="map-tooltip" class="tooltip" hidden></div>
+      </section>
+
+      <section class="card" id="results-panel">
+        <div id="summary" class="summary"></div>
+        <div class="results-head">
+          <h2 id="result-count"></h2>
+          <button type="button" id="export-csv">Download CSV</button>
+        </div>
+        <div class="table-scroll">
+          <table id="results"></table>
+        </div>
+        <button type="button" id="show-more" hidden></button>
+        <p class="hint">Click a county for its profile and census tracts. ⚠ marks a figure that is capped by the Census or rests on a small sample; hover it for detail.</p>
+      </section>
+
+      <section class="card" id="profile" hidden></section>
+
+      <footer class="site-foot">
+        <p id="vintage"></p>
+        <p>Sources: US Census Bureau (American Community Survey, Building Permits Survey, cartographic boundaries);
+           Bureau of Labor Statistics CPI-U. Not investment, tax or legal advice.</p>
+      </footer>
+    </main>
+  </div>
+
+  <datalist id="county-names"></datalist>
+
+  <script src="https://cdn.jsdelivr.net/npm/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>
