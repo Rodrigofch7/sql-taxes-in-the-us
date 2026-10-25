@@ -1,5 +1,7 @@
 # US Property Tax and Housing Screener
 
+**Live site: https://rodrigofch7.github.io/sql-taxes-in-the-us/** · [Findings](https://rodrigofch7.github.io/sql-taxes-in-the-us/findings.html) · [Methods and caveats](https://rodrigofch7.github.io/sql-taxes-in-the-us/methods.html)
+
 A free tool for comparing US counties and census tracts on property tax, rent yield,
 prices and how much housing gets built. It is aimed first at real-estate investors
 screening for places to look at, and is built on public data only.
@@ -64,16 +66,6 @@ uv run python code/build_db.py            # data/processed/acs.duckdb
 uv run pytest                             # sanity checks on the result
 uv run python code/export_web.py          # web/data/
 ```
-
-## Run the web app
-
-```bash
-cd web
-uv run python -m http.server 8000
-```
-
-Open <http://localhost:8000>. There is no build step: the app is plain HTML and JavaScript
-modules, with MapLibre GL loaded from a CDN.
 
 ## Publish
 
