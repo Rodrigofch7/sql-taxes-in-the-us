@@ -116,7 +116,8 @@ data/   raw downloads and the DuckDB file (not checked in), plus the CPI table
 
 `.claude/` defines four review-only specialists for [Claude Code](https://claude.com/claude-code):
 an economist, an investor, a data scientist and a designer. `/panel <question>` asks all
-four and merges their answers into one memo. A fifth agent, the writer, drafts the
+four and merges their answers into one memo.
+What to build next, agreed by the panel, is in [ROADMAP.md](ROADMAP.md). A fifth agent, the writer, drafts the
 Findings page.
 
 ## Findings page
